@@ -2,7 +2,7 @@
 
 // include section
 #include <stdio.h>
-
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 // define section
@@ -245,11 +245,28 @@ void deleteStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table,
     {printf("searching for value in index: %d\n", index);
         if (strcmp(hash_table->table[index].students[i]->first_name, first_name) == 0 && strcmp(hash_table->table[index].students[i]->last_name, last_name) == 0)
         {
-            //here we eed to implement the delete function
+            
             printf("Student found\n");
             print_stud(hash_table->table[index].students[i]);
+            if (user_choice())
+            {
+                //delete from the tree
+                Node* root = school[hash_table->table[index].students[i]->layer-1][hash_table->table[index].students[i]->class-1];
+                
+                //delete from the hash table
+
+                //update the average layer
+                
+            }
         }
     }
+}
+bool user_choice()
+{
+    char choice;
+    printf("Are you sure?? (y/n): ");
+    scanf(" %c", &choice);
+    return choice == 'y';
 }
 
 //////////////////////////////
