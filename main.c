@@ -15,6 +15,7 @@
 
 // struct section
 
+//the struct to hold the student data
 typedef struct Student
 {
     char first_name[MAX_NAME];
@@ -26,6 +27,7 @@ typedef struct Student
     int layer;
 } Student;
 
+//struct Node to hold the student and the left and right pointers
 typedef struct Node
 {
     Student *student;
@@ -33,6 +35,9 @@ typedef struct Node
     struct Node *right;
 } Node;
 
+//hash table single entry struct
+// count is current number of students with the same name
+// capacity is the current capacity of the array
 typedef struct HashTableEntry
 {
     Student **students; // Dynamic array of student pointers
@@ -40,12 +45,17 @@ typedef struct HashTableEntry
     int capacity;       // Current capacity of the array
 } HashTableEntry;
 
+//hash table struct
+// table is the array of HashTableEntry
+// size is the number of entries in the table
 typedef struct HashTable
 {
     HashTableEntry *table; // Array of HashTableEntry
     int size;              // Number of entries in the table
 } HashTable;
 
+
+//struct to hold the average of the students per course of a layer
 typedef struct AverageLayer
 {
     float average_by_course[MAX_COURSES];
@@ -63,6 +73,9 @@ void print_school(Node *school[MAX_LAYERS][MAX_CLASSES]);
 void delete_tree(Node* root);
 void delete_function(Node* school[MAX_LAYERS][MAX_CLASSES]);
 
+
+
+// main section
 int main()
 {
     printf("before fopen\n");
