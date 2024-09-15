@@ -75,3 +75,16 @@ we will calculate all the avg after we finish loading, and update the avg dynami
 [layer2][avg_course1][avg_course2]...[avg_course10]
 [layer3][avg_course1][avg_course2]...[avg_course10]
 
+
+////////////////////////////////////////////////////////////
+things to notice for step 1:
+1. we need to load the data from the file.
+2. before we load it, we need to call all our database structs, and also make sure, they dont have garbage in them. לאתחל אותם
+3. lets say we have read from the file succsefully, we need to print all the list of the students, and send eitan a slack msg.
+4. we also need to run a report on valgrind, and only than slack him.
+5. before the report of valgrind, we need to create a deleting function, that will release all of the data we have allocated.
+6. we need to make sure, that we dont have any memory leaks, and that we have freed all the memory we have allocated.
+
+
+   // in C sscanf need a ptr to the adress
+    // if we send an array (any) we dont need a & cus its already a ptr
