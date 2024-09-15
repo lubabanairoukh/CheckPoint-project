@@ -104,6 +104,9 @@ void delete_tree(Node* root);
 void delete_function(Node* school[MAX_LAYERS][MAX_CLASSES]);
 void delete_everything(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table);
 
+void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS]);
+void init_program(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS]);
+void deleteStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS]);
 
 // main section
 int main()
@@ -136,7 +139,7 @@ void init_program(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, 
     if (file == NULL)
     {
         perror("Error opening file\n");
-        return 1;
+        return;
     }
 
     char line[1024];
@@ -154,6 +157,7 @@ void init_program(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, 
     finish_init_avg(average_layer);
     fclose(file);
 }
+////////////////////////////////
 void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS]) {
 	int input;
 	do {
@@ -177,12 +181,15 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 			continue;
 		}
 		switch (input) {
+            /*
 		case Insert:
 			insertNewStudent(school);
 			break;
+            */
 		case Delete:
-			deleteStudent(school);
+			deleteStudent(school,hash_table,average_layer);
 			break;
+            /*
 		case Edit:
 			editStudentGrade(school);
 			break;
@@ -204,6 +211,7 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 		case Export:
 			exportDatabase(school, "dataExport.txt");
 			break;
+            */
 		case Exit:
 			delete_everything(school,hash_table);
 			break;
@@ -215,8 +223,36 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 		while (getchar() != '\n');
 	} while (input != Exit);
 }
+void deleteStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS])
+{
+    char first_name[MAX_NAME];
+    char last_name[MAX_NAME];
+    capitalize_first_letter(first_name);
+    capitalize_first_letter(last_name);
+    printf("Enter the first name of the student you want to delete: ");
+    scanf("%s", first_name);
+    printf("Enter the last name of the student you want to delete: ");
+    scanf("%s", last_name);
+    char full_name[FULL_NAME];
+    concat_names(full_name, first_name, last_name);
+    unsigned int index = hash(full_name, hash_table->size);
+    if (hash_table->table[index].count == 0)
+    {
+        printf("Student not found\n");
+        return;
+    }
+    for (int i = 0; i < hash_table->table[index].count; i++)
+    {printf("searching for value in index: %d\n", index);
+        if (strcmp(hash_table->table[index].students[i]->first_name, first_name) == 0 && strcmp(hash_table->table[index].students[i]->last_name, last_name) == 0)
+        {
+            //here we eed to implement the delete function
+            printf("Student found\n");
+            print_stud(hash_table->table[index].students[i]);
+        }
+    }
+}
 
-
+//////////////////////////////
 void clear_avg_layer(AverageLayer average_layer[MAX_LAYERS])
 {
     for (int i = 0; i < MAX_LAYERS; i++)
@@ -506,4 +542,9 @@ unsigned int hash(const char* str, int table_size) {
     }
     
     return hash % table_size;
+}
+void capitalize_first_letter(char* str) {
+    if (str[0] >= 'a' && str[0] <= 'z') {
+        str[0] = str[0] - 'a' + 'A'; // Convert the first letter to uppercase
+    }
 }
