@@ -58,7 +58,7 @@ typedef struct HashTable
 //struct to hold the average of the students per course of a layer
 typedef struct AverageLayer
 {
-    float average_by_course[MAX_COURSES];
+    double average_by_course[MAX_COURSES];
     int num_of_students;
 } AverageLayer;
 
@@ -74,11 +74,15 @@ void concat_names(char* full_name, char* first_name, char* last_name);
 
 
 float calculate_average(Student *student);
-
 void init_school(Node *school[MAX_LAYERS][MAX_CLASSES]);
 void print_stud(Student *student);
 Student *create_student(char *line);
 
+//avg layer
+void init_avg_layers(AverageLayer average_layer[MAX_LAYERS], Student* stud);
+void finish_init_avg(AverageLayer average_layer[MAX_LAYERS]);
+void print_all_avg(AverageLayer average_layer[MAX_LAYERS]);
+void clear_avg_layer(AverageLayer average_layer[MAX_LAYERS]);
 
 void insert_node(Node **rootPtr, Student *student);
 void print_single_tree(Node *root);
@@ -96,6 +100,8 @@ int main()
     // init the datastructre
     Node *school[MAX_LAYERS][MAX_CLASSES];
     HashTable* hash_table = create_hash_table(100003);
+    AverageLayer average_layer[MAX_LAYERS];
+    clear_avg_layer(average_layer);
     init_school(school);
 
     FILE *file = fopen("students_with_class.txt", "r");
@@ -114,18 +120,72 @@ int main()
         concat_names(full_name, stud->first_name, stud->last_name);
         unsigned int index = hash(full_name, hash_table->size);
         insert_node(&school[stud->layer-1][stud->class-1], stud);
+        init_avg_layers(average_layer, stud);
         insert_hash(hash_table, stud, index);
     }
+    finish_init_avg(average_layer);
+    print_all_avg(average_layer);
    // print_school(school);
     //hash table/map 
 
-    test_hash(hash_table, "Jennette Fehr");
+    
     //delete function
     delete_everything(school, hash_table);
     fclose(file);
     return 0;
 }
 // functions section//////////////////////////////////
+void clear_avg_layer(AverageLayer average_layer[MAX_LAYERS])
+{
+    for (int i = 0; i < MAX_LAYERS; i++)
+    {
+        average_layer[i].num_of_students = 0;
+        for (int j = 0; j < MAX_COURSES; j++)
+        {
+            average_layer[i].average_by_course[j] = 0;
+        }
+    }
+}
+
+void print_all_avg(AverageLayer average_layer[MAX_LAYERS])
+{
+    for (int i = 0; i < MAX_LAYERS; i++)
+    {
+        printf("Layer %d\n", i+1);
+        printf("Number of students: %d\n", average_layer[i].num_of_students);
+        for (int j = 0; j < MAX_COURSES; j++)
+        {
+            printf("Course %d: %f\n", j+1, average_layer[i].average_by_course[j]);
+        }
+    }
+}
+void finish_init_avg(AverageLayer average_layer[MAX_LAYERS])
+{
+    for (int i = 0; i < MAX_LAYERS; i++)
+    {
+        for (int j = 0; j < MAX_COURSES; j++)
+        {
+            average_layer[i].average_by_course[j] /= average_layer[i].num_of_students;
+        }
+    }
+}
+void init_avg_layers(AverageLayer average_layer[MAX_LAYERS], Student* stud)
+{
+    
+    for (int i = 0; i < MAX_GRADES; i++)
+    {
+        if (stud->layer-1 == 0)
+        {
+           // printf("grade: %d\n", stud->grades[i]);
+        }
+        average_layer[stud->layer-1].average_by_course[i] += stud->grades[i];
+    }
+    //printf("current sum of course 0 %f\n", average_layer[stud->layer-1].average_by_course[0]);
+    
+    average_layer[stud->layer-1].num_of_students++;
+ 
+}
+
 void test_hash(HashTable* table, const char* name)
 {
     printf("test hash with name: %s\n", name);

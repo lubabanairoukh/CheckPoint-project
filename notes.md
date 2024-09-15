@@ -118,3 +118,17 @@ This function uses the djb2 algorithm by Dan Bernstein, which is a simple and fa
 we must remeber, that in average because of the hash function
 we have around 100K students, and we have 103K cells in the hash table, so we have around 1 student per cell, so the search time is O(1) in average, and in worst case, we have 2 students per cell, so the search time is O(2) in worst case.
 WORST CASE if all students names are the same, we will have 100K students in the same cell, so the search time will be O(100K) in worst case.
+
+
+```c
+typedef struct AverageLayer
+{
+    float average_by_course[MAX_COURSES];
+    int num_of_students;
+} AverageLayer;
+```
+
+this works the following way:
+first when inserting a student, we will sum the grades, in the averagelayer[MAX_LAYERS] , we for loop for all the student courses and add all the grades to the average_by_course[allcourses] and we increment the num_of_students by 1.
+
+when we finish enterting all the students, we need to divide the sum of the grades by the num of students, for every layer, for all courses
