@@ -88,3 +88,33 @@ things to notice for step 1:
 
    // in C sscanf need a ptr to the adress
     // if we send an array (any) we dont need a & cus its already a ptr
+
+
+compile with -g for valgrind:
+```bash
+gcc -g your_program.c -o your_program
+```
+
+run with valgrind
+```bash
+valgrind --leak-check=full --show-leak-kinds=all  --leak-resolution=high --trace-children=no --show-below-main=yes --num-callers=50 --log-file=memory_check.log ./your_program
+```
+
+
+```c
+unsigned int hash(const char* str, int table_size) {
+    unsigned long hash = 5381;
+    int c;
+
+    while ((c = *str++))
+        hash = ((hash << 5) + hash) + c; // hash * 33 + c
+
+    return hash % table_size;
+}
+
+```
+This function uses the djb2 algorithm by Dan Bernstein, which is a simple and fast hash function. It shifts the hash by 5 places to the left (equivalent to multiplying by 32) and then adds the hash itself again, effectively multiplying by 33, before adding the ASCII value of the current character.
+
+we must remeber, that in average because of the hash function
+we have around 100K students, and we have 103K cells in the hash table, so we have around 1 student per cell, so the search time is O(1) in average, and in worst case, we have 2 students per cell, so the search time is O(2) in worst case.
+WORST CASE if all students names are the same, we will have 100K students in the same cell, so the search time will be O(100K) in worst case.
