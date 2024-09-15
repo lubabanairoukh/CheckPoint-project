@@ -14,8 +14,21 @@
 #define MAX_LAYERS 12
 #define MAX_CLASSES 10
 #define FULL_NAME (MAX_NAME * 2 +2)
+
 // struct section
 
+enum Selection {
+    Insert = 0,
+    Delete = 1,
+    Edit = 2,
+    Search = 3,
+    Showall = 4,
+    Top10 = 5,
+    UnderperformedStudents = 6,
+    Average = 7,
+    Export = 8,
+    Exit = 9
+};
 //the struct to hold the student data
 typedef struct Student
 {
@@ -101,6 +114,21 @@ int main()
     Node *school[MAX_LAYERS][MAX_CLASSES];
     HashTable* hash_table = create_hash_table(100003);
     AverageLayer average_layer[MAX_LAYERS];
+    init_program(school, hash_table, average_layer);
+    //print_all_avg(average_layer);
+   // print_school(school);
+    //hash table/map 
+    menu(school, hash_table, average_layer);
+    
+    //delete function
+    //delete_everything(school, hash_table);
+    
+    return 0;
+}
+// functions section//////////////////////////////////
+
+void init_program(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS])
+{
     clear_avg_layer(average_layer);
     init_school(school);
 
@@ -124,17 +152,71 @@ int main()
         insert_hash(hash_table, stud, index);
     }
     finish_init_avg(average_layer);
-    print_all_avg(average_layer);
-   // print_school(school);
-    //hash table/map 
-
-    
-    //delete function
-    delete_everything(school, hash_table);
     fclose(file);
-    return 0;
 }
-// functions section//////////////////////////////////
+void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS]) {
+	int input;
+	do {
+		printf("\n|School Manager<::>Home|\n");
+		printf("--------------------------------------------------------------------------------\n");
+		printf("\t[0] |--> Insert\n");
+		printf("\t[1] |--> Delete\n");
+		printf("\t[2] |--> Edit\n");
+		printf("\t[3] |--> Search\n");
+		printf("\t[4] |--> Show All\n");
+		printf("\t[5] |--> Top 10 students per course\n");
+		printf("\t[6] |--> Underperformed students\n");
+		printf("\t[7] |--> Average per course\n");
+		printf("\t[8] |--> Export\n");
+		printf("\t[9] |--> Exit\n");
+		printf("\n\tPlease Enter Your Choice (0-9): ");
+		if (scanf("%d", &input) != 1) {
+			// Invalid input, clear the input buffer
+			while (getchar() != '\n');
+			printf("\nInvalid input. Please enter a number between 0 and 9.\n");
+			continue;
+		}
+		switch (input) {
+		case Insert:
+			insertNewStudent(school);
+			break;
+		case Delete:
+			deleteStudent(school);
+			break;
+		case Edit:
+			editStudentGrade(school);
+			break;
+		case Search:
+			searchStudent(school);
+			break;
+		case Showall:
+			printAllStudents(school);
+			break;
+		case Top10:
+			printTopNStudentsPerCourse(school);
+			break;
+		case UnderperformedStudents:
+			printUnderperformedStudents(school, 15);
+			break;
+		case Average:
+			printAverage(school);
+			break;
+		case Export:
+			exportDatabase(school, "dataExport.txt");
+			break;
+		case Exit:
+			delete_everything(school,hash_table);
+			break;
+		default:
+			printf("\nThere is no item with symbol \"%d\". Please enter a number between 0 and 9!\n", input);
+			break;
+		}
+		// Clear the input buffer
+		while (getchar() != '\n');
+	} while (input != Exit);
+}
+
+
 void clear_avg_layer(AverageLayer average_layer[MAX_LAYERS])
 {
     for (int i = 0; i < MAX_LAYERS; i++)
