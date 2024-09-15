@@ -54,7 +54,6 @@ typedef struct HashTable
     int size;              // Number of entries in the table
 } HashTable;
 
-
 //struct to hold the average of the students per course of a layer
 typedef struct AverageLayer
 {
@@ -72,8 +71,6 @@ void print_single_tree(Node *root);
 void print_school(Node *school[MAX_LAYERS][MAX_CLASSES]);
 void delete_tree(Node* root);
 void delete_function(Node* school[MAX_LAYERS][MAX_CLASSES]);
-
-
 
 // main section
 int main()
@@ -97,7 +94,6 @@ int main()
         Student *stud = create_student(line);
         //-1 cus range is 0- 11 (layers) 0-9 (classes)
         insert_node(&school[stud->layer-1][stud->class-1], stud);
-      
     }
     print_school(school);
     //hash table/map 
@@ -107,6 +103,10 @@ int main()
     fclose(file);
     return 0;
 }
+
+// functions section
+
+// Function to delete the entire school structure
 void delete_function(Node* school[MAX_LAYERS][MAX_CLASSES])
 {
     for (int i = 0; i < MAX_LAYERS; i++)
@@ -117,6 +117,8 @@ void delete_function(Node* school[MAX_LAYERS][MAX_CLASSES])
         }
     }
 }
+
+// Function to delete a binary tree
 void delete_tree(Node* root)
 {
     if (root == NULL)
@@ -128,6 +130,8 @@ void delete_tree(Node* root)
     free(root->student);
     free(root);
 }
+
+// Function to print the entire school structure
 void print_school(Node *school[MAX_LAYERS][MAX_CLASSES])
 {
     for (int i = 0; i < MAX_LAYERS; i++)
@@ -139,8 +143,9 @@ void print_school(Node *school[MAX_LAYERS][MAX_CLASSES])
         }
     }
 }
+
+// Function to print a single binary tree (in-order traversal)
 void print_single_tree(Node *root)
-// print in order
 {
     if (root == NULL)
     {
@@ -152,13 +157,15 @@ void print_single_tree(Node *root)
     print_single_tree(root->right);
 }
 
+// Function to print a single student's information
 void print_stud(Student *student)
 {
-    printf("%s %s %s %d %d %d %d %d %d %d %d %d %d %d %d student avg: %f\n", student->first_name, student->last_name, student->tel_num, student->layer, student->class,
+    printf("%s %s %s %d %d %d %d %d %d %d %d %d %d %d %d %d student avg: %f\n", student->first_name, student->last_name, student->tel_num, student->layer, student->class,
            student->grades[0], student->grades[1], student->grades[2], student->grades[3], student->grades[4], student->grades[5],
            student->grades[6], student->grades[7], student->grades[8], student->grades[9], student->average);
 }
 
+// Function to create a student from a line of text
 Student *create_student(char *line)
 {
     Student *student = (Student *)malloc(sizeof(Student));
@@ -176,6 +183,7 @@ Student *create_student(char *line)
     return student;
 }
 
+// Function to insert a student into a binary tree
 void insert_node(Node **rootPtr, Student *student)
 {
     // Check if the tree node pointer itself is NULL
@@ -201,6 +209,7 @@ void insert_node(Node **rootPtr, Student *student)
     }
 }
 
+// Function to initialize the school structure
 void init_school(Node *school[MAX_LAYERS][MAX_CLASSES])
 {
     for (int i = 0; i < MAX_LAYERS; i++)
@@ -212,6 +221,7 @@ void init_school(Node *school[MAX_LAYERS][MAX_CLASSES])
     }
 }
 
+// Function to calculate the average grade of a student
 float calculate_average(Student *student)
 {
     int sum = 0;
