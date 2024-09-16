@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 // define section
 #define MAX_NAME 50
 #define TEL_NUM 11
@@ -248,25 +249,25 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 			continue;
 		}
 		switch (input) {
-            /*
+            
 		case Insert:
 
             insertNewStudent(school,  hash_table, average_layer);
 
 			
 			break;
-            */
+        
 		case Delete:
 			deleteStudent(school,hash_table,average_layer);
 			break;
         case Showall:
 			print_school(school);
             break;
-            /*
+            
 		case Edit:
-			editStudentGrade(school);
+			editStudent(school,  hash_table, average_layer);
 			break;
-            */
+            
 		case Search:
 			searchStudent(hash_table);
 			break;
@@ -906,7 +907,7 @@ void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_tab
 
     printf("Enter last name: ");
     scanf("%s", new_student->last_name);
-    if (strlen(new_student->last_name) == 0 || !is_alpha(new_student->last_name) || ||strlen(new_student->last_name) >=MAX_NAME) {
+    if (strlen(new_student->last_name) == 0 || !is_alpha(new_student->last_name) || strlen(new_student->last_name) >=MAX_NAME) {
         printf("It's incorrect input: last name should only contain letters and cannot be empty.\n");
         free(new_student);
         return;
