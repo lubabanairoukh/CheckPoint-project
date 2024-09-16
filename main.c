@@ -114,6 +114,7 @@ int is_alpha(const char *str) ;
 void capitalize_first_letter(char* str) ;
 int is_digits(const char *str) ;
 void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table,AverageLayer average_layer[MAX_LAYERS]) ;
+void update_avg_courses_single( AverageLayer average_layer[MAX_LAYERS],Student *student, bool new_student,int index);
 
 
 
