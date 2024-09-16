@@ -105,6 +105,19 @@ void delete_function(Node* school[MAX_LAYERS][MAX_CLASSES]);
 void delete_everything(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table);
 
 
+
+
+
+// insert new student or edit a student:
+void editStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS]);
+int is_alpha(const char *str) ;
+void capitalize_first_letter(char* str) ;
+int is_digits(const char *str) ;
+void update_avg_layer(AverageLayer average_layer[MAX_LAYERS],int layer);
+void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table,AverageLayer average_layer[MAX_LAYERS]) ;
+
+
+
 // main section
 int main()
 {
@@ -178,35 +191,35 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 		}
 		switch (input) {
 		case Insert:
-			insertNewStudent(school);
+            insertNewStudent(school,  hash_table, average_layer);
 			break;
-		case Delete:
-			deleteStudent(school);
-			break;
-		case Edit:
-			editStudentGrade(school);
-			break;
-		case Search:
-			searchStudent(school);
-			break;
-		case Showall:
-			printAllStudents(school);
-			break;
-		case Top10:
-			printTopNStudentsPerCourse(school);
-			break;
-		case UnderperformedStudents:
-			printUnderperformedStudents(school, 15);
-			break;
-		case Average:
-			printAverage(school);
-			break;
-		case Export:
-			exportDatabase(school, "dataExport.txt");
-			break;
-		case Exit:
-			delete_everything(school,hash_table);
-			break;
+		// case Delete:
+		// 	deleteStudent(school);
+		// 	break;
+		// case Edit:
+		// 	editStudentGrade(school);
+		// 	break;
+		// case Search:
+		// 	searchStudent(school);
+		// 	break;
+		// case Showall:
+		// 	printAllStudents(school);
+		// 	break;
+		// case Top10:
+		// 	printTopNStudentsPerCourse(school);
+		// 	break;
+		// case UnderperformedStudents:
+		// 	printUnderperformedStudents(school, 15);
+		// 	break;
+		// case Average:
+		// 	printAverage(school);
+		// 	break;
+		// case Export:
+		// 	exportDatabase(school, "dataExport.txt");
+		// 	break;
+		// case Exit:
+		// 	delete_everything(school,hash_table);
+		// 	break;
 		default:
 			printf("\nThere is no item with symbol \"%d\". Please enter a number between 0 and 9!\n", input);
 			break;
@@ -215,6 +228,8 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 		while (getchar() != '\n');
 	} while (input != Exit);
 }
+
+
 
 
 void clear_avg_layer(AverageLayer average_layer[MAX_LAYERS])
@@ -256,13 +271,9 @@ void init_avg_layers(AverageLayer average_layer[MAX_LAYERS], Student* stud)
     
     for (int i = 0; i < MAX_GRADES; i++)
     {
-        if (stud->layer-1 == 0)
-        {
-           // printf("grade: %d\n", stud->grades[i]);
-        }
+        
         average_layer[stud->layer-1].average_by_course[i] += stud->grades[i];
     }
-    //printf("current sum of course 0 %f\n", average_layer[stud->layer-1].average_by_course[0]);
     
     average_layer[stud->layer-1].num_of_students++;
  
@@ -506,4 +517,217 @@ unsigned int hash(const char* str, int table_size) {
     }
     
     return hash % table_size;
+}
+
+
+
+
+///----------------------------------------------------
+
+
+
+void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table,AverageLayer average_layer[MAX_LAYERS]) {
+    // Allocate memory for the new student
+    Student* new_student = (Student*)malloc(sizeof(Student));
+    if (new_student == NULL) {
+        perror("Error allocating memory for new student\n");
+        return;
+    }
+
+    // Collect the student's details from the user
+    printf("Enter first name: ");
+    scanf("%s", new_student->first_name);
+    if (strlen(new_student->first_name) == 0 || !is_alpha(new_student->first_name)) {
+        printf("It's incorrect input: first name should only contain letters and cannot be empty.\n");
+        free(new_student);
+        return;
+    }
+
+
+    printf("Enter last name: ");
+    scanf("%s", new_student->last_name);
+    if (strlen(new_student->last_name) == 0 || !is_alpha(new_student->last_name)) {
+        printf("It's incorrect input: last name should only contain letters and cannot be empty.\n");
+        free(new_student);
+        return;
+    }
+
+    printf("Enter phone number (10 digits): ");
+    scanf("%s", new_student->tel_num);
+    if (strlen(new_student->tel_num) != 10 || !is_digits(new_student->tel_num)) {
+        printf("It's incorrect input: phone number must be exactly 10 digits.\n");
+        free(new_student);
+        return;
+    }
+
+    printf("Enter the student's layer (1-12): ");
+    scanf("%d", &new_student->layer);
+     if (new_student->layer < 1 || new_student->layer > 12) {
+        printf("It's incorrect input: layer must be a number between 1 and 12.\n");
+        free(new_student);
+        return;
+    }
+
+    printf("Enter the student's class (1-10): ");
+    scanf("%d", &new_student->class);
+    if (new_student->class < 1 || new_student->class > 12) {
+        printf("It's incorrect input: class must be a number between 1 and 12.\n");
+        free(new_student);
+        return;
+    }
+
+    printf("Enter the student's grades (10 courses):\n");
+    for (int i = 0; i < MAX_GRADES; i++) {
+        printf("Grade for course %d: ", i + 1);
+        scanf("%d", &new_student->grades[i]);
+        if (new_student->grades[i] < 0 || new_student->grades[i] > 100) {
+            printf("It's incorrect input: grades must be between 0 and 100.\n");
+            free(new_student);
+            return;
+        }
+    }
+
+    // Calculate the student's average
+    new_student->average = calculate_average(new_student);
+    capitalize_first_letter(new_student->first_name);
+    capitalize_first_letter(new_student->last_name);
+    // Concatenate first and last name for hashing
+    char full_name[FULL_NAME];
+    concat_names(full_name, new_student->first_name, new_student->last_name);
+
+    // Get the hash index for the full name
+    unsigned int index = hash(full_name, hash_table->size);
+
+    // Insert the student into the hash table at the appropriate index
+    insert_hash(hash_table, new_student, index);
+
+    // Insert the student into the school's binary search tree based on the layer and class
+    insert_node(&school[new_student->layer - 1][new_student->class - 1], new_student);
+
+    // Update the average layer
+    init_avg_layers(average_layer, new_student);
+    update_avg_layer(average_layer, new_student->layer-1);
+
+    printf("Student %s %s successfully inserted.\n", new_student->first_name, new_student->last_name);
+}
+void update_avg_layer(AverageLayer average_layer[MAX_LAYERS],int layer){
+    for (int j = 0; j < MAX_COURSES; j++)
+        {
+            average_layer[layer].average_by_course[j] /= average_layer[layer].num_of_students;
+        }
+}
+
+
+void capitalize_first_letter(char* str) {
+    if (str[0] >= 'a' && str[0] <= 'z') {
+        str[0] = str[0] - 'a' + 'A'; // Convert the first letter to uppercase
+    }
+}
+
+int is_alpha(const char *str) {
+    while (*str) {
+        if (!isalpha(*str)) {
+            return 0; // False if any character is not a letter
+        }
+        str++;
+    }
+    return 1; // True if all characters are letters
+}
+
+// Helper function to check if a string contains only digits
+int is_digits(const char *str) {
+    while (*str) {
+        if (!isdigit(*str)) {
+            return 0; 
+        }
+        str++;
+    }
+    return 1; // True if all characters are digits
+}
+
+
+
+
+void editStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS])
+{
+    char first_name[MAX_NAME];
+    char last_name[MAX_NAME];
+
+    unsigned int index = search(hash_table, first_name, last_name);
+    if (hash_table->table[index].count == 0) {
+        printf("Error: Student not found.\n");
+        return;
+    }
+
+    // Iterate through the list of students at the found index
+    for (int i = 0; i < hash_table->table[index].count; i++) {
+        printf("Searching for student at index: %d\n", index);
+
+        // Compare the first and last names to find the exact match
+        if (strcmp(hash_table->table[index].students[i]->first_name, first_name) == 0 &&
+            strcmp(hash_table->table[index].students[i]->last_name, last_name) == 0) {
+
+            printf("Success: Student found.\n");
+            print_stud(hash_table->table[index].students[i]);
+
+            // Confirm if the user wants to edit this student
+            if (user_choice("Are you sure you want to edit this student? (y/n): ")) {
+                // Get the student to update
+                Student* student_to_update = hash_table->table[index].students[i];
+
+                int choice;
+                printf("\nWhat would you like to update?\n");
+                printf("1. Phone Number\n");
+                printf("2. Grade for a specific course\n");
+                printf("Enter your choice (1 or 2): ");
+                scanf("%d", &choice);
+
+                switch (choice) {
+                    case 1: {
+                        // Update phone number
+                        char new_phone[11];
+                        printf("Enter the new phone number (10 digits): ");
+                        scanf("%s", new_phone);
+                        if (strlen(new_phone) != 10 || !is_digits(new_phone)) {
+                            printf("Error: Invalid phone number. It must be exactly 10 digits.\n");
+                            return;
+                        }
+                        strcpy(student_to_update->tel_num, new_phone);
+                        printf("Success: Phone number updated successfully.\n");
+                        break;
+                    }
+                    case 2: {
+                        // Update grade for a specific course
+                        int course_index, new_grade;
+                        printf("Enter the course number (1-10): ");
+                        scanf("%d", &course_index);
+                        if (course_index < 1 || course_index > MAX_GRADES) {
+                            printf("Error: Invalid course number. It must be between 1 and 10.\n");
+                            return;
+                        }
+                        printf("Enter the new grade (0-100): ");
+                        scanf("%d", &new_grade);
+                        if (new_grade < 0 || new_grade > 100) {
+                            printf("Error: Invalid grade. It must be between 0 and 100.\n");
+                            return;
+                        }
+                        student_to_update->grades[course_index - 1] = new_grade;
+
+                        // Recalculate the student's average after updating the grade
+                        student_to_update->average = calculate_average(student_to_update);
+                        printf("Success: Grade updated successfully.\n");
+                        break;
+                    }
+                    default:
+                        printf("Error: Invalid choice. Please enter 1 or 2.\n");
+                        break;
+                }
+
+                // Update the average layer after editing
+                update_avg_layer(average_layer, student_to_update->layer);
+                printf("\nSuccess: Student information updated successfully.\n");
+                break;
+            }
+        }
+    }
 }
