@@ -85,7 +85,7 @@ void insert_hash(HashTable* table,Student* stud,unsigned int index);
 unsigned int hash(const char* str, int table_size);
 void concat_names(char* full_name, char* first_name, char* last_name);
 
-
+void print_grade_stud(Student *student,int course);
 float calculate_average(Student *student);
 void init_school(Node *school[MAX_LAYERS][MAX_CLASSES]);
 void print_stud(Student *student);
@@ -119,7 +119,10 @@ unsigned int search(HashTable* hash_table,char* first_name , char* last_name);
 void get_worst_students(Node *school[MAX_LAYERS][MAX_CLASSES],int bad_students_counter);
 void worst_students(Node** worst_studs_head, Node *root, int* counter);
 void print_tree_by_in_order(Node* root, int* counter);
-
+void print_tree_highest_to_lowest(Node* root, int* num_of_students, int choosen_course);
+void TopNstudents(Node *root, int num_of_studs,Node** top_students_root,int choosen_course);
+void printTopNStudentsPerCourse(Node *school[MAX_LAYERS][MAX_CLASSES]);
+void insert_node_eq_right(Node **rootPtr, Student *student,int course);
 
 // main section
 int main()
@@ -142,7 +145,6 @@ int main()
     return 0;
 }
 // functions section//////////////////////////////////
-
 
 void init_program(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS])
 {
@@ -253,11 +255,11 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 			searchStudent(hash_table);
 			break;
 		
-			/*
+			
 		case Top10:
 			printTopNStudentsPerCourse(school);
 			break;
-             */
+             
 		case UnderperformedStudents:
 			get_worst_students(school, 15);
 			break;
@@ -281,6 +283,71 @@ void menu(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageL
 		while (getchar() != '\n');
 	} while (input != Exit);
 }
+void printTopNStudentsPerCourse(Node *school[MAX_LAYERS][MAX_CLASSES])
+{
+    int choosen_course;
+    int num_of_students;
+    printf("Enter the number of students you want to see: ");
+    scanf("%d", &num_of_students);
+    if (num_of_students <= 0|| num_of_students > 10000)
+    {
+        printf("Invalid number of students\n");
+        return;
+    }
+    printf("Enter the course you want to see the top students in: ");
+    scanf("%d", &choosen_course);
+    if (choosen_course <= 0 || choosen_course >= MAX_COURSES)
+    {
+        printf("Invalid course number\n");
+        return;
+    }
+   
+
+    Node* top_students_root = NULL;
+    for (int i = 0; i < MAX_LAYERS; i++)
+    {
+        for (int j = 0; j < MAX_CLASSES; j++)
+        {
+            //printf("Layer %d, Class %d\n", i, j);
+            TopNstudents(school[i][j], num_of_students,&top_students_root,choosen_course-1);
+        }
+    }
+    print_tree_highest_to_lowest(top_students_root, &num_of_students,choosen_course-1);
+     delete_tree(top_students_root,false);
+}
+void print_tree_highest_to_lowest(Node* root, int* num_of_students, int choosen_course)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    print_tree_highest_to_lowest(root->right, num_of_students,choosen_course);
+    if ((*num_of_students) > 0)
+    {
+        print_grade_stud(root->student,choosen_course);
+        (*num_of_students)--;
+    }
+    print_tree_highest_to_lowest(root->left, num_of_students,choosen_course);
+
+   
+}
+void TopNstudents(Node *root, int num_of_studs,Node** top_students_root,int choosen_course)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    TopNstudents(root->left, num_of_studs,top_students_root,choosen_course);
+    
+    
+        if (root->student->grades[choosen_course] != -1)
+        {
+            insert_node_eq_right(top_students_root, root->student,choosen_course);
+        }
+    TopNstudents(root->right, num_of_studs,top_students_root,choosen_course);
+}
+
+
 void deleteStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, AverageLayer average_layer[MAX_LAYERS])
 {
     char first_name[MAX_NAME];
@@ -473,13 +540,10 @@ void init_avg_layers(AverageLayer average_layer[MAX_LAYERS], Student* stud)
     
     for (int i = 0; i < MAX_GRADES; i++)
     {
-        if (stud->layer-1 == 0)
-        {
-           // printf("grade: %d\n", stud->grades[i]);
-        }
+        
         average_layer[stud->layer-1].average_by_course[i] += stud->grades[i];
     }
-    //printf("current sum of course 0 %f\n", average_layer[stud->layer-1].average_by_course[0]);
+    
     
     average_layer[stud->layer-1].num_of_students++;
  
@@ -641,6 +705,10 @@ void print_stud(Student *student)
            student->grades[0], student->grades[1], student->grades[2], student->grades[3], student->grades[4], student->grades[5],
            student->grades[6], student->grades[7], student->grades[8], student->grades[9], student->average);
 }
+void print_grade_stud(Student *student,int course)
+{
+    printf("%s %s grade is: %d \n", student->first_name, student->last_name, student->grades[course]);
+}
 
 // Function to create a student from a line of text
 Student *create_student(char *line)
@@ -707,8 +775,29 @@ void print_tree_by_in_order(Node* root, int *counter)
     }
     print_tree_by_in_order(root->right, counter);
 }
-
-
+void insert_node_eq_right(Node **rootPtr, Student *student,int course)
+{
+     if (*rootPtr == NULL)
+    {
+        *rootPtr = (Node *)malloc(sizeof(Node));
+        if (*rootPtr == NULL)
+        {
+            perror("Error allocating memory\n");
+            return;
+        }
+        (*rootPtr)->student = student; // Assigning student to the student field of the new node
+        (*rootPtr)->left = NULL;
+        (*rootPtr)->right = NULL;
+    }
+    else if ((*rootPtr)->student->grades[course] > student->grades[course])
+    {
+        insert_node_eq_right(&((*rootPtr)->left), student,course); // Recursive call for the left subtree
+    }
+    else
+    {
+        insert_node_eq_right(&((*rootPtr)->right), student,course); // Recursive call for the right subtree
+    }
+}
 // Function to insert a student into a binary tree
 void insert_node(Node **rootPtr, Student *student)
 {
