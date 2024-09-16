@@ -24,7 +24,7 @@ static unsigned int packet_hook(void *priv,
     printk(KERN_INFO "Destination IP: %pI4\n", &dest);
        
     }
-    }
+    
     printk(KERN_INFO "our netfilter is very complicated\n");
     printk(KERN_INFO "Netfilter Module: Packet intercepted.\n");
     return NF_ACCEPT; // Accept the packet to continue its path
