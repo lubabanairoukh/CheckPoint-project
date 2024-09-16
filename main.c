@@ -149,14 +149,10 @@ int main()
     HashTable *hash_table = create_hash_table(100003);
     AverageLayer average_layer[MAX_LAYERS];
     init_program(school, hash_table, average_layer);
-    // print_all_avg(average_layer);
-    // print_school(school);
-    // hash table/map
+    
     menu(school, hash_table, average_layer);
 
-    // delete function
-    // delete_everything(school, hash_table);
-
+    
     return 0;
 }
 // functions section//////////////////////////////////
