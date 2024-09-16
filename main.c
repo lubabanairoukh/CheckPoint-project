@@ -2,7 +2,7 @@
 
 // include section
 #include <stdio.h>
-
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 // define section
@@ -113,7 +113,6 @@ void editStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, A
 int is_alpha(const char *str) ;
 void capitalize_first_letter(char* str) ;
 int is_digits(const char *str) ;
-void update_avg_layer(AverageLayer average_layer[MAX_LAYERS],int layer);
 void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table,AverageLayer average_layer[MAX_LAYERS]) ;
 
 
@@ -537,7 +536,7 @@ void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_tab
     // Collect the student's details from the user
     printf("Enter first name: ");
     scanf("%s", new_student->first_name);
-    if (strlen(new_student->first_name) == 0 || !is_alpha(new_student->first_name)) {
+    if (strlen(new_student->first_name) == 0 || !is_alpha(new_student->first_name) ||strlen(new_student->first_name) >=MAX_NAME) {
         printf("It's incorrect input: first name should only contain letters and cannot be empty.\n");
         free(new_student);
         return;
@@ -546,7 +545,7 @@ void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_tab
 
     printf("Enter last name: ");
     scanf("%s", new_student->last_name);
-    if (strlen(new_student->last_name) == 0 || !is_alpha(new_student->last_name)) {
+    if (strlen(new_student->last_name) == 0 || !is_alpha(new_student->last_name) || ||strlen(new_student->last_name) >=MAX_NAME) {
         printf("It's incorrect input: last name should only contain letters and cannot be empty.\n");
         free(new_student);
         return;
@@ -570,7 +569,7 @@ void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_tab
 
     printf("Enter the student's class (1-10): ");
     scanf("%d", &new_student->class);
-    if (new_student->class < 1 || new_student->class > 12) {
+    if (new_student->class < 1 || new_student->class > 10) {
         printf("It's incorrect input: class must be a number between 1 and 12.\n");
         free(new_student);
         return;
@@ -604,17 +603,14 @@ void insertNewStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_tab
     // Insert the student into the school's binary search tree based on the layer and class
     insert_node(&school[new_student->layer - 1][new_student->class - 1], new_student);
 
-    // Update the average layer
-    init_avg_layers(average_layer, new_student);
-    update_avg_layer(average_layer, new_student->layer-1);
 
+    for(int i=0; i<MAX_COURSES;i++){
+        update_avg_courses_single(average_layer,new_student,true,i);
+
+    }
+    average_layer[new_student->layer-1].num_of_students++;
+    
     printf("Student %s %s successfully inserted.\n", new_student->first_name, new_student->last_name);
-}
-void update_avg_layer(AverageLayer average_layer[MAX_LAYERS],int layer){
-    for (int j = 0; j < MAX_COURSES; j++)
-        {
-            average_layer[layer].average_by_course[j] /= average_layer[layer].num_of_students;
-        }
 }
 
 
@@ -674,7 +670,7 @@ void editStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, A
             if (user_choice("Are you sure you want to edit this student? (y/n): ")) {
                 // Get the student to update
                 Student* student_to_update = hash_table->table[index].students[i];
-
+                
                 int choice;
                 printf("\nWhat would you like to update?\n");
                 printf("1. Phone Number\n");
@@ -715,6 +711,8 @@ void editStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, A
 
                         // Recalculate the student's average after updating the grade
                         student_to_update->average = calculate_average(student_to_update);
+                        //average
+                        update_avg_courses_single(average_layer,student_to_update,false,course_index-1);
                         printf("Success: Grade updated successfully.\n");
                         break;
                     }
@@ -722,12 +720,20 @@ void editStudent(Node* school[MAX_LAYERS][MAX_CLASSES], HashTable* hash_table, A
                         printf("Error: Invalid choice. Please enter 1 or 2.\n");
                         break;
                 }
-
-                // Update the average layer after editing
-                update_avg_layer(average_layer, student_to_update->layer);
+    
                 printf("\nSuccess: Student information updated successfully.\n");
                 break;
             }
         }
+    }
+}
+void update_avg_courses_single( AverageLayer average_layer[MAX_LAYERS],Student *student, bool new_student,int index){
+    average_layer[student->layer-1].average_by_course[index]*= average_layer[student->layer-1].num_of_students;
+    average_layer[student->layer-1].average_by_course[index]+=student->grades[index];
+    if(new_student){
+        average_layer[student->layer-1].average_by_course[index]/=average_layer[student->layer-1].num_of_students+1;
+    }
+    else{
+        average_layer[student->layer-1].average_by_course[index]/=average_layer[student->layer-1].num_of_students;
     }
 }
