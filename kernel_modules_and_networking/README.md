@@ -186,3 +186,43 @@ ip_header->version //ipv4 or ipv6
 example of tracert to under ttl 
 basicly we go through many hops till we reach the destination (in this case www.google.com)
 ![alt text](image-1.png)
+
+## Fourth Module
+
+so our first idea, was to locate malicious/violent/bad data in the packets, and drop them.
+we soon realized that its very complicated, to extract the data, and to compare it, against actual strings like "violent" "gambling" etc, cus the data itself is in binary format, and the extraction itself, is complicated enough.
+
+than after talking with the mentors, we decided to go to a simpler approach, and we choose to block packets from specifc ranges of ip addresses.
+
+### important 
+
+in order to convert ip adress into u32 so we can compare it, with the ip_header->saddr for example, 
+we have two important functions:
+
+htonl()
+function: htonl() stands for "host to network long."
+Purpose: Converts a 32-bit integer from the host's byte order to network byte order.
+Use Case: It's used when integers are sent over the network to ensure that the receiver interprets the bytes correctly regardless of its native byte order. Network byte order is defined to be big-endian, which means the most significant byte is transmitted first.
+
+and 
+
+ntohl()
+Function: ntohl() stands for "network to host long."
+Purpose: Converts a 32-bit integer from network byte order to the host's native byte order.
+Use Case: It's used when receiving integers over the network to convert them from the standard network byte order to the host’s byte order, allowing the program running on the host to correctly handle the received data.
+
+At the end after talking with Eitan, we dont need to use this function he suggested to use in_aton
+which transfer a string of an ip "1.1.1.1" to __be32 
+than we can stright compare the ip_header->saddr with the __be32 ip address
+
+example:
+
+```c
+char* ip = "8.8.8.8";
+        __be32 block_ip = in_aton(ip);
+        if(ip_header->saddr == block_ip)
+        {
+            printk(KERN_INFO "Blocked IP: %pI4\n", &ip_header->saddr);
+            return NF_DROP;
+        }
+```
