@@ -53,7 +53,7 @@ now we can clean that make file cus it really disgusting
 make clean
 ```
 
-in order to push in this linux i must setup:
+in order to push in this linux we must setup:
  git config --global user.email "you@example.com"
   git config --global user.name "Your Name"
 
@@ -77,7 +77,12 @@ The hook function must match a specific signature defined by Netfilter to be com
 - **state**: Contains information about the packet and the hook point.
 - **printk**: Logs a message each time a packet is processed by this hook.
 - **Return Value**: `NF_ACCEPT` tells Netfilter to allow the packet to proceed. Other values like `NF_DROP` can be used to drop the packet.
+for more info i found this source:
 
+[netfilter-hacking-HOWTO](https://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO.txt)
+
+
+![alt text](image.png)
 
 ```c
 static struct nf_hook_ops nfho = {
@@ -90,8 +95,15 @@ static struct nf_hook_ops nfho = {
 
 - **hook**: This is a pointer to the function to call when the conditions are met.
 - **pf**: Protocol family, set to `PF_INET` for IPv4. For IPv6, you would use `PF_INET6`.
-- **hooknum**: Defines at which point in the packet processing this hook will be called. `NF_INET_PRE_ROUTING` is the point just after the packet is received.
-- **priority**: Determines the order of calling when multiple hooks exist for the same hook point.
+
+IPv4 and IPv6 are two different versions of the Internet Protocol. They are both used to send packets of data across the Internet. The main difference between IPv4 and IPv6 is the number of IP addresses they can support. 
+IPv4 using 32 bits, IPv6 using 128 bits.
+there are also more differnces between them,security, routing, and network configuration.
+You can read more about it [Understanding the Difference Between IPv4 and IPv6](https://www.siteground.com/kb/ipv4-vs-ipv6/#Understanding_IPv4_and_IPv6)
+
+- **hooknum**: Defines at which point in the packet processing this hook will be called. `NF_INET_PRE_ROUTING` is the point just after the packet is received. BASICLY THE LOCATION OF THE FILTER, CHECK THE GRAPH IN THE CHECKPOINT PRESENTATION
+
+- **priority**: Determines the order of calling when multiple hooks exist for the same hook point. IN CASE WE HAVE MULTIPLY HOOKS ON THE SAME SPOT, WHICH ONE SHOULD BE FIRST? LAST?
 
 
 ```c
@@ -108,7 +120,9 @@ static void __exit my_netfilter_exit(void) {
 ```
 
 - **nf_register_net_hook & nf_unregister_net_hook**: These functions register and unregister your hook with the Netfilter framework.
-- **init_net**: Represents the network namespace; `init_net` is the initial network namespace.
+- **init_net**: Represents the network namespace; `init_net` is the initial network namespace, basically connect the hook to the default global network of the system.
+- **nfho**: The hook structure we defined earlier with the hook and other parameters as described above.
+
 - **Initialization and Cleanup Functions**: Marked with `__init` and `__exit` to indicate to the kernel that these functions are only used at initialization or cleanup time, which can help to save memory.
 
 

@@ -20,6 +20,7 @@ static unsigned int packet_hook(void *priv,
     {
         unsigned int source = ip_header->saddr;
         unsigned int dest = ip_header->daddr;
+        
     printk(KERN_INFO "Source IP: %pI4\n", &source);
     printk(KERN_INFO "Destination IP: %pI4\n", &dest);
        
