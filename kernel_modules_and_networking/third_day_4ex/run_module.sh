@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MODULE_NAME="netfilter_module"
-PING_TARGET="8.8.8.8"
+PING_TARGET="127.0.0.1"
 
 echo "//////////////////////////"
 echo "Cleaning dmesg before starting"
@@ -35,7 +35,7 @@ ping -c 4 $PING_TARGET
 
 echo "Final dmesg output after pinging:"
 echo "//////////////////////////"
-dmesg | tail -10
+dmesg
 
 echo "Removing the module using rmmod..."
 echo "//////////////////////////"

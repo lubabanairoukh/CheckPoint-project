@@ -226,3 +226,18 @@ char* ip = "8.8.8.8";
             return NF_DROP;
         }
 ```
+
+
+## Update to Part Three: Octet-by-Octet Comparison
+
+After discussing the previous solution with the mentors, I implemented a second method for comparing the source IP with the CIDR blocks. Instead of directly comparing the full IP addresses, I opted to compare each of the four octets (A.B.C.D) individually.
+
+### The New Approach:
+
+The idea was to split both the source IP (`ip_header->saddr`) and the CIDR block's first and last addresses into four separate octets and compare them one by one. This method was intended to provide better precision when determining if an IP falls within the desired range.
+
+You can see the implementation in `netfilter_module_2.c`
+
+### Remaining Issues:
+
+While this approach offers more control and appeared to be an improvement, it didn’t fully resolve the problem. In some cases, the comparison didn’t yield correct results, and certain packets weren’t blocked as expected. I suspect this issue may be related to how the octets are processed or how the CIDR blocks are handled, requiring further debugging and refinement.
