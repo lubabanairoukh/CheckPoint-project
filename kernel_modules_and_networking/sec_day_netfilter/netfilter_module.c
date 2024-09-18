@@ -18,7 +18,10 @@ static unsigned int packet_hook(void *priv,
     struct iphdr *ip_header = ip_hdr(skb);
     if(ip_header)
     {
-    printk(KERN_INFO "Source IP: %pI4\n", &ip_header->saddr);
+        unsigned int source = ip_header->saddr;
+        unsigned int dest = ip_header->daddr;
+    printk(KERN_INFO "Source IP: %pI4\n", &source);
+    printk(KERN_INFO "Destination IP: %pI4\n", &dest);
          switch (ip_header->protocol) {
         case IPPROTO_TCP:
             printk(KERN_INFO "TCP Packet\n");
