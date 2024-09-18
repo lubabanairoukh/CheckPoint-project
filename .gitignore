@@ -9,7 +9,25 @@
 
 # Executable files
 *.out
+# Windows executable files
 *.exe
+
+# Makefile specific files
+Makefile
+makefile
+GNUmakefile
+
+# Linux kernel specific files
+Module.symvers
+Module.markers
+modules.order
+*.mod.c
+*.cmd
+*.o.cmd
+*.ko
+*.mod
+*.mod.o
+*.symvers
 
 # Debug files
 *.dSYM/
@@ -18,3 +36,6 @@
 # Temporary files
 *.tmp
 *.swp
+
+
+.vscode
