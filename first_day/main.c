@@ -156,6 +156,7 @@ int main()
     return 0;
 }
 // functions section//////////////////////////////////
+/* -------------------------------------------------------------------------- */
 
 void init_program(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, AverageLayer average_layer[MAX_LAYERS])
 {
@@ -184,6 +185,7 @@ void init_program(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, 
     finish_init_avg(average_layer);
     fclose(file);
 }
+/* -------------------------------------------------------------------------- */
 void searchStudent(HashTable *hash_table)
 {
     char first_name[MAX_NAME];
@@ -209,6 +211,7 @@ void searchStudent(HashTable *hash_table)
     }
     printf("Student not found\n");
 }
+/* -------------------------------------------------------------------------- */
 unsigned int search(HashTable *hash_table, char *first_name, char *last_name)
 {
     printf("Enter the first name of the student you want to delete: ");
@@ -222,7 +225,7 @@ unsigned int search(HashTable *hash_table, char *first_name, char *last_name)
     unsigned int index = hash(full_name, hash_table->size);
     return index;
 }
-////////////////////////////////
+/* -------------------------------------------------------------------------- */
 void menu(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, AverageLayer average_layer[MAX_LAYERS])
 {
     int input;
@@ -301,6 +304,7 @@ void menu(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, AverageL
             ;
     } while (input != Exit);
 }
+/* -------------------------------------------------------------------------- */
 void printTopNStudentsPerCourse(Node *school[MAX_LAYERS][MAX_CLASSES])
 {
     int choosen_course;
@@ -332,6 +336,7 @@ void printTopNStudentsPerCourse(Node *school[MAX_LAYERS][MAX_CLASSES])
     print_tree_highest_to_lowest(top_students_root, &num_of_students, choosen_course - 1);
     delete_tree(top_students_root, false);
 }
+/* -------------------------------------------------------------------------- */
 void print_tree_highest_to_lowest(Node *root, int *num_of_students, int choosen_course)
 {
     if (root == NULL)
@@ -346,6 +351,7 @@ void print_tree_highest_to_lowest(Node *root, int *num_of_students, int choosen_
     }
     print_tree_highest_to_lowest(root->left, num_of_students, choosen_course);
 }
+/* -------------------------------------------------------------------------- */
 void TopNstudents(Node *root, int num_of_studs, Node **top_students_root, int choosen_course)
 {
     if (root == NULL)
@@ -360,7 +366,7 @@ void TopNstudents(Node *root, int num_of_studs, Node **top_students_root, int ch
     }
     TopNstudents(root->right, num_of_studs, top_students_root, choosen_course);
 }
-
+/* -------------------------------------------------------------------------- */
 void deleteStudent(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, AverageLayer average_layer[MAX_LAYERS])
 {
     char first_name[MAX_NAME];
@@ -411,6 +417,7 @@ void deleteStudent(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table,
         }
     }
 }
+/* -------------------------------------------------------------------------- */
 void delete_from_hash_table(HashTable *hash_table, unsigned int index, int position)
 {
     HashTableEntry *entry = &hash_table->table[index];
@@ -420,7 +427,7 @@ void delete_from_hash_table(HashTable *hash_table, unsigned int index, int posit
     entry->students[entry->count - 1] = NULL;
     entry->count--;
 }
-
+/* -------------------------------------------------------------------------- */
 void update_average_layer(AverageLayer average_layer[MAX_LAYERS], Student *student_to_delete)
 {
     int layer_index = student_to_delete->layer - 1;
@@ -449,6 +456,7 @@ void update_average_layer(AverageLayer average_layer[MAX_LAYERS], Student *stude
         average_layer[layer_index].num_of_students = 0;
     }
 }
+/* -------------------------------------------------------------------------- */
 bool user_choice(const char *message)
 {
     char choice;
@@ -456,6 +464,7 @@ bool user_choice(const char *message)
     scanf(" %c", &choice);
     return choice == 'y' || choice == 'Y';
 }
+/* -------------------------------------------------------------------------- */
 Node *deleteNode(Node *root, Student *student)
 {
     if (root == NULL)
@@ -502,7 +511,7 @@ Node *deleteNode(Node *root, Student *student)
     }
     return root;
 }
-
+/* -------------------------------------------------------------------------- */
 Node *minValueNode(Node *node)
 {
     Node *current = node;
@@ -510,7 +519,7 @@ Node *minValueNode(Node *node)
         current = current->left;
     return current;
 }
-
+/* -------------------------------------------------------------------------- */
 void clear_avg_layer(AverageLayer average_layer[MAX_LAYERS])
 {
     for (int i = 0; i < MAX_LAYERS; i++)
@@ -522,7 +531,7 @@ void clear_avg_layer(AverageLayer average_layer[MAX_LAYERS])
         }
     }
 }
-
+/* -------------------------------------------------------------------------- */
 void print_all_avg(AverageLayer average_layer[MAX_LAYERS])
 {
     printf("Printing all averages of all layers\n");
@@ -536,6 +545,7 @@ void print_all_avg(AverageLayer average_layer[MAX_LAYERS])
         }
     }
 }
+/* -------------------------------------------------------------------------- */
 void finish_init_avg(AverageLayer average_layer[MAX_LAYERS])
 {
     for (int i = 0; i < MAX_LAYERS; i++)
@@ -546,6 +556,7 @@ void finish_init_avg(AverageLayer average_layer[MAX_LAYERS])
         }
     }
 }
+/* -------------------------------------------------------------------------- */
 void init_avg_layers(AverageLayer average_layer[MAX_LAYERS], Student *stud)
 {
 
@@ -557,7 +568,7 @@ void init_avg_layers(AverageLayer average_layer[MAX_LAYERS], Student *stud)
 
     average_layer[stud->layer - 1].num_of_students++;
 }
-
+/* -------------------------------------------------------------------------- */
 void test_hash(HashTable *table, const char *name)
 {
     printf("test hash with name: %s\n", name);
@@ -568,7 +579,7 @@ void test_hash(HashTable *table, const char *name)
         print_stud(table->table[index].students[i]);
     }
 }
-
+/* -------------------------------------------------------------------------- */
 void insert_hash(HashTable *table, Student *stud, unsigned int index)
 {
     if (table->table[index].count == 0)
@@ -603,7 +614,7 @@ void insert_hash(HashTable *table, Student *stud, unsigned int index)
         table->table[index].count++;
     }
 }
-
+/* -------------------------------------------------------------------------- */
 void concat_names(char *full_name, char *first_name, char *last_name)
 {
     memset(full_name, 0, FULL_NAME);
@@ -613,12 +624,13 @@ void concat_names(char *full_name, char *first_name, char *last_name)
     strcat(full_name, " ");
     strcat(full_name, last_name);
 }
-
+/* -------------------------------------------------------------------------- */
 void delete_everything(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table)
 {
     delete_function(school);
     delete_hash(hash_table);
 }
+/* -------------------------------------------------------------------------- */
 HashTable *create_hash_table(int size)
 {
     HashTable *hash_table = (HashTable *)malloc(sizeof(HashTable));
@@ -643,7 +655,7 @@ HashTable *create_hash_table(int size)
     }
     return hash_table;
 }
-
+/* -------------------------------------------------------------------------- */
 void delete_hash(HashTable *hash_table)
 {
     for (int i = 0; i < hash_table->size; i++)
@@ -654,6 +666,7 @@ void delete_hash(HashTable *hash_table)
     free(hash_table->table);
     free(hash_table);
 }
+/* -------------------------------------------------------------------------- */
 // Function to delete the entire school structure
 void delete_function(Node *school[MAX_LAYERS][MAX_CLASSES])
 {
@@ -665,7 +678,7 @@ void delete_function(Node *school[MAX_LAYERS][MAX_CLASSES])
         }
     }
 }
-
+/* -------------------------------------------------------------------------- */
 // Function to delete a binary tree
 void delete_tree(Node *root, bool delete_studs)
 {
@@ -679,7 +692,7 @@ void delete_tree(Node *root, bool delete_studs)
         free(root->student);
     free(root);
 }
-
+/* -------------------------------------------------------------------------- */
 // Function to print the entire school structure
 void print_school(Node *school[MAX_LAYERS][MAX_CLASSES])
 {
@@ -692,7 +705,7 @@ void print_school(Node *school[MAX_LAYERS][MAX_CLASSES])
         }
     }
 }
-
+/* -------------------------------------------------------------------------- */
 // Function to print a single binary tree (in-order traversal)
 void print_single_tree(Node *root)
 {
@@ -705,7 +718,7 @@ void print_single_tree(Node *root)
     print_stud(root->student);
     print_single_tree(root->right);
 }
-
+/* -------------------------------------------------------------------------- */
 // Function to print a single student's information
 void print_stud(Student *student)
 {
@@ -713,11 +726,12 @@ void print_stud(Student *student)
            student->grades[0], student->grades[1], student->grades[2], student->grades[3], student->grades[4], student->grades[5],
            student->grades[6], student->grades[7], student->grades[8], student->grades[9], student->average);
 }
+/* -------------------------------------------------------------------------- */
 void print_grade_stud(Student *student, int course)
 {
     printf("%s %s grade is: %d \n", student->first_name, student->last_name, student->grades[course]);
 }
-
+/* -------------------------------------------------------------------------- */
 // Function to create a student from a line of text
 Student *create_student(char *line)
 {
@@ -735,6 +749,7 @@ Student *create_student(char *line)
     // print_stud(student);
     return student;
 }
+/* -------------------------------------------------------------------------- */
 void get_worst_students(Node *school[MAX_LAYERS][MAX_CLASSES], int bad_students_counter)
 {
     Node *worst_students_root = NULL;
@@ -753,7 +768,7 @@ void get_worst_students(Node *school[MAX_LAYERS][MAX_CLASSES], int bad_students_
 
     delete_tree(worst_students_root, false);
 }
-
+/* -------------------------------------------------------------------------- */
 void worst_students(Node **worst_studs_head, Node *root, int *counter)
 {
     if (root == NULL)
@@ -768,7 +783,7 @@ void worst_students(Node **worst_studs_head, Node *root, int *counter)
     }
     worst_students(worst_studs_head, root->right, counter);
 }
-
+/* -------------------------------------------------------------------------- */
 void print_tree_by_in_order(Node *root, int *counter)
 {
     if (root == NULL)
@@ -783,6 +798,7 @@ void print_tree_by_in_order(Node *root, int *counter)
     }
     print_tree_by_in_order(root->right, counter);
 }
+/* -------------------------------------------------------------------------- */
 void insert_node_eq_right(Node **rootPtr, Student *student, int course)
 {
     if (*rootPtr == NULL)
@@ -806,6 +822,7 @@ void insert_node_eq_right(Node **rootPtr, Student *student, int course)
         insert_node_eq_right(&((*rootPtr)->right), student, course); // Recursive call for the right subtree
     }
 }
+/* -------------------------------------------------------------------------- */
 // Function to insert a student into a binary tree
 void insert_node(Node **rootPtr, Student *student)
 {
@@ -831,7 +848,7 @@ void insert_node(Node **rootPtr, Student *student)
         insert_node(&((*rootPtr)->right), student); // Recursive call for the right subtree
     }
 }
-
+/* -------------------------------------------------------------------------- */
 // Function to initialize the school structure
 void init_school(Node *school[MAX_LAYERS][MAX_CLASSES])
 {
@@ -843,7 +860,7 @@ void init_school(Node *school[MAX_LAYERS][MAX_CLASSES])
         }
     }
 }
-
+/* -------------------------------------------------------------------------- */
 // Function to calculate the average grade of a student
 float calculate_average(Student *student)
 {
@@ -857,7 +874,7 @@ float calculate_average(Student *student)
     // printf("sum in calc avg: %d\n", sum);
     return (float)sum / MAX_GRADES;
 }
-
+/* -------------------------------------------------------------------------- */
 unsigned int hash(const char *str, int table_size)
 {
     unsigned long hash = 5381;
@@ -871,7 +888,7 @@ unsigned int hash(const char *str, int table_size)
 
     return hash % table_size;
 }
-
+/* -------------------------------------------------------------------------- */
 void insertNewStudent(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, AverageLayer average_layer[MAX_LAYERS])
 {
     // Allocate memory for the new student
@@ -966,7 +983,7 @@ void insertNewStudent(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_tab
 
     printf("Student %s %s successfully inserted.\n", new_student->first_name, new_student->last_name);
 }
-
+/* -------------------------------------------------------------------------- */
 void capitalize_first_letter(char *str)
 {
     if (str[0] >= 'a' && str[0] <= 'z')
@@ -974,7 +991,7 @@ void capitalize_first_letter(char *str)
         str[0] = str[0] - 'a' + 'A'; // Convert the first letter to uppercase
     }
 }
-
+/* -------------------------------------------------------------------------- */
 int is_alpha(const char *str)
 {
     while (*str)
@@ -987,7 +1004,7 @@ int is_alpha(const char *str)
     }
     return 1; // True if all characters are letters
 }
-
+/* -------------------------------------------------------------------------- */
 // Helper function to check if a string contains only digits
 int is_digits(const char *str)
 {
@@ -1001,7 +1018,7 @@ int is_digits(const char *str)
     }
     return 1; // True if all characters are digits
 }
-
+/* -------------------------------------------------------------------------- */
 void editStudent(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, AverageLayer average_layer[MAX_LAYERS])
 {
     char first_name[MAX_NAME];
@@ -1095,6 +1112,7 @@ void editStudent(Node *school[MAX_LAYERS][MAX_CLASSES], HashTable *hash_table, A
         }
     }
 }
+/* -------------------------------------------------------------------------- */
 void update_avg_courses_single(AverageLayer average_layer[MAX_LAYERS], Student *student, bool new_student, int index)
 {
     average_layer[student->layer - 1].average_by_course[index] *= average_layer[student->layer - 1].num_of_students;
