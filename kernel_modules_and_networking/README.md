@@ -73,7 +73,7 @@ in order to push in this linux we must setup:
 The hook function must match a specific signature defined by Netfilter to be compatible with the framework.
 
 - **priv**: A pointer to private data, not used here.
-- **skb**: A pointer to the `struct sk_buff` which represents the network packet.
+- **skb**: A pointer to the `struct sk_buff` which represents the network packet, skb stands for "socket buffer".
 - **state**: Contains information about the packet and the hook point.
 - **printk**: Logs a message each time a packet is processed by this hook.
 - **Return Value**: `NF_ACCEPT` tells Netfilter to allow the packet to proceed. Other values like `NF_DROP` can be used to drop the packet.
@@ -124,5 +124,4 @@ static void __exit my_netfilter_exit(void) {
 - **nfho**: The hook structure we defined earlier with the hook and other parameters as described above.
 
 - **Initialization and Cleanup Functions**: Marked with `__init` and `__exit` to indicate to the kernel that these functions are only used at initialization or cleanup time, which can help to save memory.
-
 
