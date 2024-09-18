@@ -19,3 +19,4 @@ you can find there, detailed instructions on how to create a kernel module examp
 
 Personally, I learned alot, and I am very happy with the results, although I had higher expectations from the module we tried to build, which didnt really work as expected.
 
+Be aware that the notes of each project were written in a hurry, in order to keep up with the pace of the course, so they might not be as clear or the language might not be as good as I would like it to be.
