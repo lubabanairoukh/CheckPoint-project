@@ -20,6 +20,8 @@ you can find there, detailed instructions on how to create a kernel module examp
 ### Conclusion
 
 While we both learned a lot from this project, we had slightly different perspectives on the results.
+
+
 **Yaniv** was very happy with the progress we made and the knowledge gained, though he had higher expectations for the module’s performance, which didn’t work as smoothly as expected.
 
 
